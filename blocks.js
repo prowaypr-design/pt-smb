@@ -1,3 +1,4 @@
+/* v1.0.1: каждый блок запускается, только если он есть на странице */
 /* Три блока главной (3D-плитки, по макетам Ольги): цепочка атаки, как продукты работают вместе, путь к защите */
 (()=>{
 const {Stage,M4}=Tile3D,PI=Math.PI;
@@ -38,7 +39,7 @@ function row2(R,p,t){const items=[],sh=[],c=p*5.6-.6;
   R.st.draw(camFor(R.st),items,sh);
   R.spans.forEach((s,i)=>s.classList.toggle('on',i===0?u0>.55:c>1.15+(i-1)*.25));R.row.classList.toggle('live',c>0)}
 
-const sec=document.getElementById('chain'),ROWS=[makeRow('r1',row1),makeRow('r2',row2)];
+const sec=document.getElementById('chain');if(!sec||!document.getElementById('r1')||!document.getElementById('r2'))return;const ROWS=[makeRow('r1',row1),makeRow('r2',row2)];
 function prog(){const r=sec.getBoundingClientRect(),h=sec.offsetHeight-innerHeight;return clamp(-r.top/Math.max(1,h))}
 function frame(ms){const p=prog(),t=ms/1000;
   ROWS[0].draw(ROWS[0],clamp(p/.55),t);ROWS[1].draw(ROWS[1],clamp((p-.45)/.5),t)}
@@ -54,7 +55,7 @@ const eo=u=>1-Math.pow(1-u,3),eio=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2,back=u=
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,narrow=()=>innerWidth<820;
 const FROST=[.97,.975,.99,1],FROST_S=[.72,.75,.82],DARK=[.2,.21,.25,1],DARK_S=[.3,.02,.04];
 
-const sec=document.getElementById('tog'),cv=sec.querySelector('canvas'),lis=[...sec.querySelectorAll('.bsteps li')],tags=[...sec.querySelectorAll('.btag')];
+const sec=document.getElementById('tog');if(!sec||!sec.querySelector('canvas'))return;const cv=sec.querySelector('canvas'),lis=[...sec.querySelectorAll('.bsteps li')],tags=[...sec.querySelectorAll('.btag')];
 const st=new Stage(cv,TEX);st.fog=[0,0,0,.45];st.fogR=[10,16];
 
 /* Мир (вид сверху-спереди): слева два входа — Интернет и Почта, справа офис */
@@ -145,7 +146,7 @@ function numberFace(n){const S=1024,c=document.createElement('canvas');c.width=c
   x.lineWidth=6;x.strokeStyle='rgba(255,255,255,.9)';x.strokeText(n,S/2,S/2+30);
   return c.toDataURL('image/jpeg',.9)}
 
-const sec=document.getElementById('way'),cv=sec.querySelector('canvas'),lis=[...sec.querySelectorAll('.bsteps li')];
+const sec=document.getElementById('way');if(!sec||!sec.querySelector('canvas'))return;const cv=sec.querySelector('canvas'),lis=[...sec.querySelectorAll('.bsteps li')];
 let st,ready=false;
 (document.fonts?document.fonts.load('600 100px Montserrat'):Promise.resolve()).catch(()=>{}).then(()=>{
   const tex={pt:TEX.pt,n1:numberFace('1'),n2:numberFace('2'),n3:numberFace('3'),n4:numberFace('4')};
