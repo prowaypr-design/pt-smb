@@ -1,3 +1,4 @@
+/* v1.0.2: сцены начинают собираться, когда блок наполовину на экране; башня на «Все продукты» видна сразу и не упирается в шапку */
 /* 3D-плитки продуктов PT: сцены прокрутки (по products.html Ольги). Нужны tile3d.js и tex.js */
 (function(){
 const {Stage,M4,buildSlice}=Tile3D,TAU=Math.PI*2,PI=Math.PI;
@@ -117,8 +118,8 @@ function maze(S,p,t){const st=S.st,items=[];const off=narrow()?[0,1.05,0]:[0,0,0
 
 /* ---------- PT: плитки слетаются и складываются в башню, башня закручивается спиралью и держит баланс ---------- */
 const TOWER=['ngfw','email','epp','xspider','maze','pt'];
-function ptStack(S,p,t){const st=S.st,items=[];const off=narrow()?[0,1.55,0]:[0,-.7,0],k0=narrow()?.56:1;
-  const N=TOWER.length,build=clamp((p-.03)/.5),twist=ease(clamp((p-.55)/.35));
+function ptStack(S,p,t){const st=S.st,items=[];const off=narrow()?[0,1.55,0]:[0,-.95,0],k0=narrow()?.56:.86;
+  const N=TOWER.length,build=clamp(.3+p/.45),twist=ease(clamp((p-.55)/.35));
   for(let i=0;i<N;i++){const land=ease(clamp(build*N*1.05-i));if(land<=0)continue;
     const h=i*.46*k0,sway=Math.sin(t*.9+i*.35)*.03*(i/N);
     const ang=i*.42*twist+Math.sin(t*.35)*.2+i*.05;
@@ -144,7 +145,7 @@ const RENDER={ngfw,email,epp,xspider,maze,pt:ptStack};
 const FOG={white:[[0,0,0,.6],[7,14]],frost:[[.067,.071,.086,.55],[6,11]]};
 const SC=[];
 document.querySelectorAll('[data-scene]').forEach(sec=>{try{const S=sceneOf(sec,RENDER[sec.dataset.scene]);const f=FOG[sec.classList.contains('frost')?'frost':'white'];S.st.fog=f[0];S.st.fogR=f[1];S.w=0;SC.push(S)}catch(e){sec.classList.add('no-gl')}});
-function progress(S){const r=S.sec.getBoundingClientRect(),h=S.sec.offsetHeight-innerHeight;return clamp(-r.top/Math.max(1,h))}
+function progress(S){const r=S.sec.getBoundingClientRect(),lead=innerHeight*.5,h=S.sec.offsetHeight-innerHeight+lead;return clamp((lead-r.top)/Math.max(1,h))}
 function visible(S){if(!S.sec.offsetParent)return false;const r=S.sec.getBoundingClientRect();return r.bottom>-50&&r.top<innerHeight+50}
 function frame(ms){const t=ms/1000;SC.forEach(S=>{if(!S.ok||!visible(S))return;
   const w=S.cv.clientWidth;if(w!==S.w){S.st.resize();S.w=w}
