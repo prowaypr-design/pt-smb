@@ -1,3 +1,4 @@
+/* v2.0.0: текстуры грузятся по ссылке с jsDelivr — crossOrigin для WebGL, при ошибке сцена не зависает */
 /* Плитка PT как настоящая 3D-модель на WebGL2 без библиотек.
    Корпус: скруглённый квадрат с толщиной и фаской. Лицо и тыл: текстура с картинки продукта
    (с обеих сторон логотип читается правильно). Боковины: красный лак с бликами студийного света. */
@@ -124,7 +125,7 @@ class Stage{
       [[0,3,0],[1,3,12],[2,2,24],[3,1,32]].forEach(([l,s2,o])=>{gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,s2,gl.FLOAT,false,36,o)});
       const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,m.i,gl.STATIC_DRAW);this.meshes[s]={vao,n:m.i.length}});
     const q=gl.createVertexArray();gl.bindVertexArray(q);const qb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,qb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);this.quad=q;
-    this.ready=Promise.all(Object.entries(textures).map(([k,src])=>new Promise(r=>{const im=new Image();im.onload=()=>{const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
+    this.ready=Promise.all(Object.entries(textures).map(([k,src])=>new Promise(r=>{const im=new Image();im.crossOrigin='anonymous';im.onerror=()=>r();im.onload=()=>{const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
       gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,im);gl.generateMipmap(gl.TEXTURE_2D);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
       gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
       const ext=gl.getExtension('EXT_texture_filter_anisotropic');if(ext)gl.texParameterf(gl.TEXTURE_2D,ext.TEXTURE_MAX_ANISOTROPY_EXT,8);this.tex[k]=t;r()};im.src=src})));
